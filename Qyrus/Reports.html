@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+    integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+  <title>REPORTS</title>
+  <script type="text/javascript" src="repo.js"></script>
+</head>
+<style>
+  nav {
+
+    width: 124%;
+
+    height: 39px;
+
+    background:rgb(178, 212, 212);
+
+    opacity: 0.8;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 4px 20px 0px 20px;
+
+  }
+
+
+
+  nav .logo {
+
+    position: relative;
+
+    cursor: pointer;
+
+    width: 140px;
+
+    float: left;
+
+  }
+
+
+
+  nav ul {
+
+    display: flex;
+
+    list-style: none;
+
+  }
+
+  nav ul li {
+
+    margin: 0 5px;
+
+  }
+
+
+
+  nav ul li a {
+
+    text-decoration: none;
+
+    color: rgb(10, 9, 9);
+
+    font-size: 18px;
+
+    font-weight: 500;
+
+    letter-spacing: 1px;
+
+    padding: 8px 10px;
+
+    border-radius: 2px;
+
+    transition: all 0.5s ease;
+
+  }
+
+
+
+  nav ul li a:hover {
+
+    color: black;
+
+    background: rgb(9, 179, 226);
+
+    font-weight: 500;
+
+  }
+
+  table {
+
+    font-family: sans-serif;
+    padding: 0;
+    margin: 0.1%;
+  }
+
+  .search-btn {
+    color: aliceblue;
+    float: right;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: aliceblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
+
+<body>
+  <nav>
+    <img class="logo" src="logo.png" alt="logo">
+    <ul>
+      <li><a href="https://www.qyrus.com/">HOME</a></li>
+      <li><a href="Dashboards.html">PREV</a></li>
+      <li><a href="index.html">LOGOUT</a></li>
+    </ul>
+  </nav>
+  <br />
+  <div class="search-wrapper">
+    <label for="search"></label>
+    <input type="search" placeholder="Search" id="search" data-search>
+  </div>
+
+
+  <table id="get" class="table table-striped" style="width:100%">
+    <thead>
+      <tr>
+        <th>Type of Device</th>
+        <th>Created By</th>
+        <th>Updated By</th>
+        <th>Manufacturer</th>
+        <th>Make</th>
+        <th>Model</th>
+        <th>OS</th>
+        <th>Date of Purchase</th>
+        <th>Current Client</th>
+        <th>Device ID</th>
+        <th>Serial No</th>
+        <th>Location Of Hosting</th>
+        <th>Status</th>
+        <th>IP Address</th>
+        <th>Phone Number</th>
+        <th>BYOD</th>
+        <th>Reason for Deactivating</th>
+
+      </tr>
+    </thead>
+    <tbody id="tbData">
+    </tbody>
+  </table>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+  <script>
+    $(document).ready(function(){
+
+$("#search").on("keyup", function() {
+
+  var value = $(this).val().toUpperCase();
+
+  $("#tbData tr").filter(function() {
+
+    $(this).toggle($(this).text().toUpperCase().indexOf(value) > -1)
+
+  });
+
+});
+
+});
+
+
+
+
+
+
+    fetch("http://localhost:8080/mobile/all")
+      .then(res => res.json())
+      .then(data => {
+        users = data.map(user => {
+          const card = userCardTemplate.content.cloneNode(true).children[0]
+          const header = card.querySelector("[data-header]")
+          const body = card.querySelector("[data-body]")
+          header.textContent = user.name
+          body.textContent = user.email
+          userCardContainer.append(card)
+          return { name: user.name, email: user.email, element: card }
+        })
+      })
+    function getData() {
+      fetch("http://localhost:8080/mobile/all").then(
+        (res) => res.json()
+      ).then((response) => {
+        var tmpData = "";
+        console.log(response);
+        response.forEach((user) => {
+          tmpData += "<tr>"
+          tmpData += "<td>" + user.typeofdevice + "</td>";
+          tmpData += "<td>" + user.deviceaddedby + "</td>";
+          tmpData += "<td>" + user.deviceupdatedby + "</td>";
+          tmpData += "<td>" + user.manufacturer + "</td>";
+          tmpData += "<td>" + user.make + "</td>";
+          tmpData += "<td>" + user.model + "</td>";
+          tmpData += "<td>" + user.os + "</td>";
+          tmpData += "<td>" + user.dateofpurchase + "</td>";
+          tmpData += "<td>" + user.currentclient + "</td>";
+          tmpData += "<td>" + user.deviceid + "</td>";
+          tmpData += "<td>" + user.serialnumber + "</td>";
+          tmpData += "<td>" + user.locationofhosting + "</td>";
+          tmpData += "<td>" + user.status + "</td>";
+          tmpData += "<td>" + user.ipaddress + "</td>";
+          tmpData += "<td>" + user.phonenumber + "</td>";
+          tmpData += "<td>" + user.byod + "</td>";
+          tmpData += "<td>" + user.reason + "</td>";
+
+
+          tmpData += "</tr>";
+        })
+        document.getElementById("tbData").innerHTML = tmpData;
+      })
+    }
+
+    getData();
+  </script>
+</body>
+
+</html>
